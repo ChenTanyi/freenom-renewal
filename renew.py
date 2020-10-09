@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
 import os
+import re
 import sys
+import bs4
 import json
 import requests
 import logging
 import urllib.parse
+
+
+def trim(s: str) -> str:
+    return re.sub(r'\s+', ' ', s).strip()
+
+
+def logging_table(titles, rows, length: int):
+    format_func = lambda x: f'{x:<{length + 1}s}'
+
+    logging.info(' '.join(map(format_func, titles)))
+    for row in rows:
+        logging.info(' '.join(map(format_func, row)))
 
 
 def login(sess: requests.Session):
@@ -23,15 +37,63 @@ def login(sess: requests.Session):
         logging.error(r.content)
         r.raise_for_status()
     else:
-        query = urllib.parse.urlparse(r.url)
+        query = urllib.parse.urlparse(r.url).query
         if urllib.parse.parse_qs(query).get('incorrect') == 'true':
             logging.error('Login failed: incorrect details')
             sys.exit(1)
 
 
+def list_domains(sess: requests.Session) -> list:
+    # Domain List: name, status, remaining days, renewable message, renewable url
+    uri = 'https://my.freenom.com/domains.php?a=renewals'
+    r = sess.get(
+        uri, headers = {
+            'Referer': 'https://my.freenom.com/clientarea.php',
+        })
+    r.raise_for_status()
+
+    html = bs4.BeautifulSoup(r.content, 'html.parser')
+    domain_content = html('section', class_ = 'renewalContent')
+    assert len(
+        domain_content
+    ) == 1, 'Domains page should only contain one renewalContent section'
+
+    maxlen = 10
+    titles = []
+    rows = []
+    for tr in domain_content[0]('tr'):
+        if len(tr('th')) > 0:
+            for th in tr('th'):
+                text = trim(th.text)
+                if text:
+                    titles.append(text)
+        else:
+            is_domain = True
+            rows.append([])
+            for td in tr('td'):
+                text = trim(td.text)
+                if text == 'Renew This Domain':
+                    assert len(
+                        td('a')
+                    ) == 1, 'More than one link found in Renew This Domain column'
+                    rows[-1].append(
+                        urllib.parse.urljoin(uri,
+                                             td('a')[0]['href']))
+                elif text:
+                    rows[-1].append(text)
+                    if is_domain:
+                        maxlen = max(maxlen, len(text))
+                        is_domain = False
+
+    logging.info('Domain List:')
+    logging_table(titles, rows, maxlen)
+    return rows
+
+
 def main():
     with requests.Session() as sess:
         login(sess)
+        domains = list_domains(sess)
 
 
 if __name__ == "__main__":
