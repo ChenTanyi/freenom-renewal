@@ -1,0 +1,22 @@
+on:
+  schedule:
+    - cron: 0 2,22 * * *
+  workflow_dispatch:
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Renew Domains
+        run: ./renew.py
+        shell: bash
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+      - name: Upload Result
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: result
+          path: result
