@@ -90,10 +90,64 @@ def list_domains(sess: requests.Session) -> list:
     return rows
 
 
+def renew_domain(uri: str, sess: requests.Session, name: str = None):
+    query = urllib.parse.urlparse(uri).query
+    domain_id = urllib.parse.parse_qs(query).get('domain')
+    if not domain_id:
+        logging.error(f'Unable to get domain id from {uri}')
+        return
+
+    domain_id = domain_id[0]
+    logging.debug(f'domain id "{domain_id}"')
+
+    # Just get the page, not sure it is needed indeed or not.
+    r = sess.get(
+        uri,
+        headers = {
+            'Referer': 'https://my.freenom.com/domains.php?a=renewals',
+        })
+
+    r = sess.post(
+        'https://my.freenom.com/domains.php?submitrenewals=true',
+        headers = {
+            'Referer': uri,
+        },
+        data = {
+            'renewalid': domain_id,
+            f'renewalperiod[{domain_id}]': os.environ.get('PERIOD', '12M'),
+            'paymentmethod': 'credit',
+        })
+    logging.info(f'Response {r.status_code} {r.reason}')
+
+    if not name:
+        name = domain_id
+    os.makedirs('result', exist_ok = True)
+    with open(f'result/{name}.html', 'wb') as f:
+        f.write(r.content)
+
+
 def main():
     with requests.Session() as sess:
+        sess.mount('http://', requests.adapters.HTTPAdapter(max_retries = 5))
+        sess.mount('https://', requests.adapters.HTTPAdapter(max_retries = 5))
+
         login(sess)
         domains = list_domains(sess)
+
+        for domain in domains:
+            if 'Renewable' in domain[3] or int(
+                    re.search(r'\d+', domain[2]).group()) <= 14:
+                renew_domain(domain[-1], sess, domain[0])
+
+        domains = list_domains(sess)
+        failed = False
+        for domain in domains:
+            if 'Renewable' in domain[3] or int(
+                    re.search(r'\d+', domain[2]).group()) <= 10:
+                logging.error(f'Renew failed with domain "{domain[0]}"')
+                failed = True
+        if failed:
+            sys.exit(1)
 
 
 if __name__ == "__main__":
