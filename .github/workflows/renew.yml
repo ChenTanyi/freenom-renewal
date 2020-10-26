@@ -1,3 +1,4 @@
+name: Renew Domains
 on:
   schedule:
     - cron: 0 2,22 * * *
