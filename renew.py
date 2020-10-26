@@ -135,11 +135,16 @@ def main():
         login(sess)
         domains = list_domains(sess)
 
+        renew = False
         for domain in domains:
             if 'Renewable' in domain[3] or int(
                     re.search(r'\d+', domain[2]).group()) <= 14:
+                renew = True
                 time.sleep(5)
                 renew_domain(domain[-1], sess, domain[0])
+        if not renew:
+            logging.info('Nothing to renew')
+            return
 
         domains = list_domains(sess)
         failed = False
