@@ -37,7 +37,7 @@ def logging_table(titles, rows, length: int):
        #LineNotify
        token='LINETOKEN': os.environ['LINETOKEN']
        msg=rows[row]
-       print(token,msg)
+       print(token,msg,"-------------")
        
 def login(sess: requests.Session):
     r = sess.post(
