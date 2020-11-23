@@ -17,6 +17,7 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          LINETOKEN: ${{ secrets.LINETOKEN }}
       - name: Upload Result
         if: failure()
         uses: actions/upload-artifact@v2
