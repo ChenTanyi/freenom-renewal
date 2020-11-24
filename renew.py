@@ -31,7 +31,7 @@ def logging_table(titles, rows, length: int):
     for row in rows:
        #logging.info(' '.join(map(format_func, row)))
        #LineNotify
-       token='LINETOKEN': os.environ['LINETOKEN']
+       token: os.environ['LINETOKEN']
        msg=rows[row]
        print(token,msg,"-------------")
        
