@@ -19,11 +19,7 @@ def lineNotifyMessage(token, msg):
       payload = {'message': msg}
       r = requests.post("https://notify-api.line.me/api/notify", headers = headers, params = payload)
       return r.status_code
-	
-  # 修改為你要傳送的訊息內容
-  #message = 'Notify from LINE, HELLO WORLD'
-  # 修改為你的權杖內容
-  #token = 'daaaaaaaaaaaaaaaadvmlsdvjowiesaifwjfklsdjl9ef'
+
     
 def trim(s: str) -> str:
     return re.sub(r'\s+', ' ', s).strip()
@@ -31,9 +27,9 @@ def trim(s: str) -> str:
 
 def logging_table(titles, rows, length: int):
     format_func = lambda x: f'{x:<{length + 1}s}'
-    logging.info(' '.join(map(format_func, titles)))
+    #logging.info(' '.join(map(format_func, titles)))
     for row in rows:
-       logging.info(' '.join(map(format_func, row)))
+       #logging.info(' '.join(map(format_func, row)))
        #LineNotify
        token='LINETOKEN': os.environ['LINETOKEN']
        msg=rows[row]
