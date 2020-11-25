@@ -1,1 +1,1 @@
-forked from ChenTanyi/freenom-renewal and add LineNotify OAT PUSH.
+forked from ChenTanyi/freenom-renewal and add LineNotify OTA PUSH.
