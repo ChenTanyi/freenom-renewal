@@ -11,8 +11,9 @@ import logging
 import urllib.parse
 
 def lineNotifyMessage(msg):
+      token=os.environ['LINETOKEN']
       headers = {
-          "Authorization": "Bearer " + os.environ['LINETOKEN'], 
+          "Authorization": "Bearer " + token, 
           "Content-Type" : "application/x-www-form-urlencoded"
       }
 	
