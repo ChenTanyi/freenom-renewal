@@ -29,7 +29,7 @@ def trim(s: str) -> str:
 def logging_table(titles, rows, length: int):
     format_func = lambda x: f'{x:<{length + 1}s}'
     logging.info(' '.join(map(format_func, titles)))
-    msg="\n"
+    msg="\n------------\n"
     for row in rows:
        logging.info(' '.join(map(format_func, row)))
        msg=msg+(row[0]+"還有"+row[2]+"到期\n\n")
