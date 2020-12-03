@@ -28,12 +28,13 @@ def trim(s: str) -> str:
 def logging_table(titles, rows, length: int):
     format_func = lambda x: f'{x:<{length + 1}s}'
     logging.info(' '.join(map(format_func, titles)))
+    msg=""
     for row in rows:
        logging.info(' '.join(map(format_func, row)))
-       #LineNotify
-       token= os.environ['LINETOKEN']
-       msg=(row[0]+"還有"+row[2]+"到期")
-       lineNotifyMessage(token,msg)
+       msg=msg+(row[0]+"還有"+row[2]+"到期\n")
+     #LineNotify
+     token= os.environ['LINETOKEN']		       
+     lineNotifyMessage(token,msg)
        
 def login(sess: requests.Session):
     r = sess.post(
