@@ -33,10 +33,11 @@ def logging_table(titles, rows, length: int):
     for row in rows:
        logging.info(' '.join(map(format_func, row)))
        msg=msg+(row[0]+"還有"+row[2]+"到期\n")
+       logging.info(msg)
        #token= os.environ['LINETOKEN']
      #LineNotify
      		       
-     lineNotifyMessage(msg)
+     #lineNotifyMessage(msg)
        
 def login(sess: requests.Session):
     r = sess.post(
