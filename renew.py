@@ -10,9 +10,9 @@ import requests
 import logging
 import urllib.parse
 
-def lineNotifyMessage(token, msg):
+def lineNotifyMessage(msg):
       headers = {
-          "Authorization": "Bearer " + token, 
+          "Authorization": "Bearer " + os.environ['LINETOKEN'], 
           "Content-Type" : "application/x-www-form-urlencoded"
       }
 	
@@ -32,7 +32,7 @@ def logging_table(titles, rows, length: int):
     for row in rows:
        logging.info(' '.join(map(format_func, row)))
        msg=msg+(row[0]+"還有"+row[2]+"到期\n")
-       token= os.environ['LINETOKEN']
+       #token= os.environ['LINETOKEN']
      #LineNotify
      		       
      lineNotifyMessage(token,msg)
