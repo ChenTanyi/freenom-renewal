@@ -9,6 +9,12 @@ import requests
 import logging
 import urllib.parse
 
+try:
+    import lxml
+    PARSER = 'lxml'
+except:
+    PARSER = 'html.parser'
+
 
 def trim(s: str) -> str:
     return re.sub(r'\s+', ' ', s).strip()
@@ -53,7 +59,7 @@ def list_domains(sess: requests.Session) -> list:
         })
     r.raise_for_status()
 
-    html = bs4.BeautifulSoup(r.content, 'html.parser')
+    html = bs4.BeautifulSoup(r.content, PARSER)
     domain_content = html('section', class_ = 'renewalContent')
     assert len(
         domain_content
