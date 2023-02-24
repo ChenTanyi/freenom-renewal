@@ -41,6 +41,7 @@ def login(sess: requests.Session):
     r = sess.post(
         'https://my.freenom.com/dologin.php',
         headers = {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Mobile Safari/537.36',
             'Referer': 'https://my.freenom.com/clientarea.php',
         },
         data = {
@@ -64,6 +65,7 @@ def list_domains(sess: requests.Session) -> list:
     uri = 'https://my.freenom.com/domains.php?a=renewals'
     r = sess.get(
         uri, headers = {
+	    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Mobile Safari/537.36',
             'Referer': 'https://my.freenom.com/clientarea.php',
         })
     r.raise_for_status()
@@ -120,12 +122,14 @@ def renew_domain(uri: str, sess: requests.Session, name: str = None):
     r = sess.get(
         uri,
         headers = {
+	    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Mobile Safari/537.36',
             'Referer': 'https://my.freenom.com/domains.php?a=renewals',
         })
 
     r = sess.post(
         'https://my.freenom.com/domains.php?submitrenewals=true',
         headers = {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Mobile Safari/537.36',
             'Referer': uri,
         },
         data = {
